@@ -3,11 +3,11 @@
 ### Table of Contents
 
 - [Overview](#overview)
-- [System Architecture](#system_architecture)
+- [System Architecture](#system-architecture)
 - [Installation](#installation)
-  - [FastAPI Deployment](#fastapi_deployment)
-  - [SSH Tunnel Configuration](#ssh_tunnel_configuration)
-  - [UFW Rules on Remote Server](#ufw_rules_on_remote_server)
+  - [FastAPI Deployment](#fastapi-deployment)
+  - [SSH Tunnel Configuration](#ssh-tunnel-configuration)
+  - [UFW Rules on Remote Server](#ufw-rules-on-remote-server)
   - [Prerequisites](#prerequisites)
   - [Setup](#setup)
 - [Usage](#usage)
