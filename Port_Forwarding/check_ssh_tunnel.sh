@@ -16,7 +16,7 @@ REMOTE_USER_SERVER="${USER}@api-serv.ru"
 
 # 🔘 Check if Config File is available
 if [ -f "/home/${USER}/scr/config.sh" ]; then
-    source config.sh
+    source /home/${USER}/scr/config.sh
 else
     echo "⛔️ Config file not found. Exiting."
     exit 1
