@@ -24,18 +24,11 @@ This script (`check_ssh_tunnel.sh`) is designed to automatically manage an SSH t
 
 Here is a simplified ASCII diagram illustrating the interaction between the local machine running a FastAPI instance and a remote server, connected through an SSH tunnel.
 
-```
-                     +---------------------+
-                     |    Local Machine    |  
-                     |     (FastAPI)       |
-                     +----------+----------+ 
-                            || SSH [-R]
-                            || Tunnel 
-                            \/ 8001:8001
-                     +---------------------+ 
-                     |    Remote Server    | 
-                     |    (api-serv.ru)    |
-                     +---------------------+
+```mermaid
+graph TD
+  LM["Local Machine - (FastAPI)"]
+  RS["Remote Server - (api-serv.ru)"]
+  LM -->|"SSH [-R] Tunnel 8001:8001"| RS
 ```
 
 #### Key Components
