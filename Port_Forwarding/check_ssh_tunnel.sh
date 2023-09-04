@@ -6,7 +6,7 @@
 # 📠 [Description]: This script checks if the SSH tunnel and FastAPI container are running and takes appropriate actions.
 # 👤 [Author]: Dmitrii [https://github.com/dmpanf]
 # 🎼 [Dependencies]: config.sh, ssh, ps, docker, grep, pkill
-# 🛠  [config.sh]: ${SSH_PORT}, ${SSH_KEY}
+# 🛠  [/home/${USER}/scr/config.sh]: ${SSH_PORT}, ${SSH_KEY}
 
 # 🔰 Initialize constants
 DOCKER_NAME="000-fastapi_app"
@@ -15,7 +15,7 @@ LOCAL_PORT="8001"
 REMOTE_USER_SERVER="${USER}@api-serv.ru"
 
 # 🔘 Check if Config File is available
-if [ -f "config.sh" ]; then
+if [ -f "/home/${USER}/scr/config.sh" ]; then
     source config.sh
 else
     echo "⛔️ Config file not found. Exiting."
@@ -43,9 +43,9 @@ fi
 
 # ⚙️  Function to check and set crontab entry
 check_and_set_crontab() {
-    isCronJob=$(crontab -l | grep '/home/bunta/scr/check_ssh_tunnel.sh')
+    isCronJob=$(crontab -l | grep '/home/${USER}/scr/check_ssh_tunnel.sh')
     if [[ ! $isCronJob ]]; then
-        (crontab -l ; echo "*/3 * * * * /home/bunta/scr/check_ssh_tunnel.sh") | crontab -
+        (crontab -l ; echo "*/3 * * * * /home/${USER}/scr/check_ssh_tunnel.sh") | crontab -
         echo "⏱  Crontab is set!"
     fi
 }
