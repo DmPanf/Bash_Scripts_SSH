@@ -32,13 +32,14 @@ if [[ -z "$REMOTE_PORT" || -z "$LOCAL_PORT" || -z "$REMOTE_USER_SERVER" ]]; then
 fi
 
 # ⚙️  Function to check and set ufw rule on the remote server
-check_and_set_ufw_rule() {
-    isUfwRule=$(ssh -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${SSH_KEY} 'sudo ufw status | grep ${REMOTE_PORT}/tcp')
-    if [[ ! $isUfwRule ]]; then
-        ssh -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${SSH_KEY} 'sudo ufw allow ${REMOTE_PORT}/tcp'
-        echo "🔑 UFW rule is set!"
-    fi
-}
+#    This might not work well in an automated script without human interaction.
+#check_and_set_ufw_rule() {
+#    isUfwRule=$(ssh -t -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${SSH_KEY} 'sudo ufw status | grep ${REMOTE_PORT}/tcp')
+#    if [[ ! $isUfwRule ]]; then
+#        ssh -t -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${SSH_KEY} 'sudo ufw allow ${REMOTE_PORT}/tcp'
+#        echo "🔑 UFW rule is set!"
+#    fi
+#}
 
 # ⚙️  Function to check and set crontab entry
 check_and_set_crontab() {
@@ -50,7 +51,7 @@ check_and_set_crontab() {
 }
 
 # ⚙️  Call the above functions
-check_and_set_ufw_rule
+# check_and_set_ufw_rule
 check_and_set_crontab
 
 # 🔘 Check if the SSH daemon is running
