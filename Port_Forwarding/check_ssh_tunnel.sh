@@ -33,9 +33,9 @@ fi
 
 # ⚙️  Function to check and set ufw rule on the remote server
 check_and_set_ufw_rule() {
-    isUfwRule=$(ssh -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${$SSH_KEY} 'sudo ufw status | grep ${REMOTE_PORT}/tcp')
+    isUfwRule=$(ssh -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${SSH_KEY} 'sudo ufw status | grep ${REMOTE_PORT}/tcp')
     if [[ ! $isUfwRule ]]; then
-        ssh -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${$SSH_KEY} 'sudo ufw allow ${REMOTE_PORT}/tcp'
+        ssh -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${SSH_KEY} 'sudo ufw allow ${REMOTE_PORT}/tcp'
         echo "🔑 UFW rule is set!"
     fi
 }
@@ -62,10 +62,10 @@ isFastAPI=$(docker ps --filter "ancestor=${DOCKER_NAME}" --filter "status=runnin
 
 # 🔘 If FastAPI is running but SSH tunnel is not, establish the SSH tunnel
 if [[ $isFastAPI && ! $isSSH ]]; then
-    ssh -f -N -R ${REMOTE_PORT}:localhost:${LOCAL_PORT} -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${$SSH_KEY}
+    ssh -f -N -R ${REMOTE_PORT}:localhost:${LOCAL_PORT} -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${SSH_KEY}
     echo "✅ SSH tunnel established ♻️ " | wall
 # If SSH tunnel is running but FastAPI is not, kill the SSH session
 elif [[ $isSSH && ! $isFastAPI ]]; then
-    pkill -f "ssh -f -N -R ${REMOTE_PORT}:localhost:${LOCAL_PORT} -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${$SSH_KEY}"
+    pkill -f "ssh -f -N -R ${REMOTE_PORT}:localhost:${LOCAL_PORT} -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${SSH_KEY}"
     echo "❌ SSH tunnel terminated ‼️ " | wall
 fi
