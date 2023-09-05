@@ -22,37 +22,49 @@ else
     exit 1
 fi
 
-# 🔘 Check if constants are set
-if [[ -z "$REMOTE_PORT" || -z "$LOCAL_PORT" || -z "$REMOTE_USER_SERVER" ]]; then
-    echo "🔰 Some constants are not set. Please provide them:"
-    read -p "💠 Docker name [${DOCKER_NAME}]: " DOCKER_NAME
-    read -p "1️⃣  Remote port [${REMOTE_PORT}]: " REMOTE_PORT
-    read -p "2️⃣  Local port [${LOCAL_PORT}]: " LOCAL_PORT
-    read -p "📡 Remote user and server (user@server) [${REMOTE_USER_SERVER}]: " REMOTE_USER_SERVER
-fi
+# ⚙️  Check if constants are set
+check_constants() {
+    if [[ -z "$REMOTE_PORT" || -z "$LOCAL_PORT" || -z "$REMOTE_USER_SERVER" ]]; then
+        echo "🔰 Some constants are not set. Please provide them:"
+        read -p "💠 Docker name [${DOCKER_NAME}]: " DOCKER_NAME
+        read -p "1️⃣  Remote port [${REMOTE_PORT}]: " REMOTE_PORT
+        read -p "2️⃣  Local port [${LOCAL_PORT}]: " LOCAL_PORT
+        read -p "📡 Remote user and server (user@server) [${REMOTE_USER_SERVER}]: " REMOTE_USER_SERVER
+    fi
+}
 
 # ⚙️  Function to check and set ufw rule on the remote server
 #    This might not work well in an automated script without human interaction.
-#check_and_set_ufw_rule() {
-#    isUfwRule=$(ssh -t -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${SSH_KEY} 'sudo ufw status | grep ${REMOTE_PORT}/tcp')
-#    if [[ ! $isUfwRule ]]; then
-#        ssh -t -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${SSH_KEY} 'sudo ufw allow ${REMOTE_PORT}/tcp'
-#        echo "🔑 UFW rule is set!"
-#    fi
-#}
+# If the sudo commands are being run on a remote server, you can configure SSH to allocate a pseudo-terminal for that session with -t flag
+check_and_set_ufw_rule() {
+    isUfwRule=$(ssh -t -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${SSH_KEY} 'sudo ufw status | grep ${REMOTE_PORT}/tcp')
+    if [[ ! $isUfwRule ]]; then
+        ssh -t -p ${SSH_PORT} ${REMOTE_USER_SERVER} -i /home/${USER}/.ssh/${SSH_KEY} 'sudo ufw allow ${REMOTE_PORT}/tcp'
+        echo "🔑 UFW rule is set!"
+    fi
+}
 
 # ⚙️  Function to check and set crontab entry
 check_and_set_crontab() {
-    isCronJob=$(crontab -l | grep '/home/${USER}/scr/check_ssh_tunnel.sh')
+    isCronJob=$(crontab -l | grep "/home/${USER}/scr/check_ssh_tunnel.sh")
     if [[ ! $isCronJob ]]; then
         (crontab -l ; echo "*/3 * * * * /home/${USER}/scr/check_ssh_tunnel.sh") | crontab -
         echo "⏱  Crontab is set!"
     fi
 }
 
-# ⚙️  Call the above functions
-# check_and_set_ufw_rule
-check_and_set_crontab
+# ⚙️  Call the above functions if the script is running in a user session
+if [[ -n "$TERM" && -n "$SHELL" ]]; then
+    # The script is running in a user session
+    check_and_set_ufw_rule
+    check_and_set_crontab
+    check_constants
+else
+    # The script is running in a cron job
+    # Do nothing or do something else
+    exit 1
+fi
+
 
 # 🔘 Check if the SSH daemon is running
 isSSH=$(ps -ef | grep "[s]sh.*${REMOTE_PORT}:localhost:${LOCAL_PORT}")
