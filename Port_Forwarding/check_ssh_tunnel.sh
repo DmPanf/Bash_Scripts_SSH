@@ -56,7 +56,7 @@ check_and_set_crontab() {
 # ⚙️  Call the above functions if the script is running in a user session
 if [[ -n "$TERM" && -n "$SHELL" ]]; then
     # The script is running in a user session
-    check_and_set_ufw_rule
+    check_and_set_ufw_rule  # Enter the password for Remote Server
     check_and_set_crontab
     check_constants
 else
